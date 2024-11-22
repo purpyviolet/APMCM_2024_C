@@ -118,6 +118,13 @@ pet_count_weighted_future = (
     optimal_weights[1] * poly_future +
     optimal_weights[2] * nonlinear_future
 )
+
+
+
+
+
+
+# 6. Export Prediction
 svr_export_model = SVR(kernel='rbf').fit(X_export_normalized, pet_food_export_value)
 export_features_future = np.column_stack((food_export_percentage[-1] * (1 + 0.05) ** np.arange(1, 4), pop_growth_rate_future, gdp_per_capita_future, exchange_rate_future, energy_price_index_future))
 
@@ -131,34 +138,34 @@ pet_food_export_value_svr_future = svr_export_model.predict(export_features_futu
 random_forest_export_model = RandomForestRegressor(n_estimators=50, random_state=42).fit(X_export_normalized, pet_food_export_value)
 pet_food_export_value_rf_future = random_forest_export_model.predict(export_features_future_normalized)
 
-# 7. Visualization of Prediction Results
-plt.figure(figsize=(14, 10))
+# # 7. Visualization of Prediction Results
+# plt.figure(figsize=(14, 10))
 
-# Pet Count Prediction
-plt.subplot(2, 1, 1)
-plt.plot(np.concatenate((years, years_future)), np.concatenate((pet_count, pet_count_weighted_future)), '-o', label='Pet Count Prediction', linewidth=2, markersize=6, color='b')
-plt.title('Pet Count Prediction (2019-2027)')
-plt.xlabel('Year')
-plt.ylabel('Pet Count (Million)')
-plt.legend()
-plt.grid(True)
+# # Pet Count Prediction
+# plt.subplot(2, 1, 1)
+# plt.plot(np.concatenate((years, years_future)), np.concatenate((pet_count, pet_count_weighted_future)), '-o', label='Pet Count Prediction', linewidth=2, markersize=6, color='b')
+# plt.title('Pet Count Prediction (2019-2027)')
+# plt.xlabel('Year')
+# plt.ylabel('Pet Count (Million)')
+# plt.legend()
+# plt.grid(True)
 
-# Pet Food Export Prediction using multiple models
-plt.subplot(2, 1, 2)
-plt.plot(np.concatenate((years, years_future)), np.concatenate((pet_food_export_value, pet_food_export_value_svr_future)), '-s', label='SVR Export Prediction', linewidth=2, markersize=6, color='r')
-plt.plot(np.concatenate((years, years_future)), np.concatenate((pet_food_export_value, pet_food_export_value_rf_future)), '-d', label='Random Forest Export Prediction', linewidth=2, markersize=6, color='g')
-plt.plot(np.concatenate((years, years_future)), np.concatenate((pet_food_export_value, export_model.predict(export_features_future_normalized))), '-^', label='Linear Regression Export Prediction', linewidth=2, markersize=6, color='b')
-plt.title('Pet Food Export Prediction (2019-2027)')
-plt.xlabel('Year')
-plt.ylabel('Export Value (Billion USD)')
-plt.legend()
-plt.grid(True)
+# # Pet Food Export Prediction using multiple models
+# plt.subplot(2, 1, 2)
+# plt.plot(np.concatenate((years, years_future)), np.concatenate((pet_food_export_value, pet_food_export_value_svr_future)), '-s', label='SVR Export Prediction', linewidth=2, markersize=6, color='r')
+# plt.plot(np.concatenate((years, years_future)), np.concatenate((pet_food_export_value, pet_food_export_value_rf_future)), '-d', label='Random Forest Export Prediction', linewidth=2, markersize=6, color='g')
+# plt.plot(np.concatenate((years, years_future)), np.concatenate((pet_food_export_value, export_model.predict(export_features_future_normalized))), '-^', label='Linear Regression Export Prediction', linewidth=2, markersize=6, color='b')
+# plt.title('Pet Food Export Prediction (2019-2027)')
+# plt.xlabel('Year')
+# plt.ylabel('Export Value (Billion USD)')
+# plt.legend()
+# plt.grid(True)
 
-plt.suptitle('Forecast of China Pet Food Industry (2025-2027)', fontsize=16)
+# plt.suptitle('Forecast of China Pet Food Industry (2025-2027)', fontsize=16)
 
-# Show all plots
-plt.tight_layout(rect=[0, 0, 1, 0.96])
-plt.show()
+# # Show all plots
+# plt.tight_layout(rect=[0, 0, 1, 0.96])
+# plt.show()
 
 # Additional Plot for Comparison of Export Predictions
 plt.figure(figsize=(10, 6))
