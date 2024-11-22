@@ -6,6 +6,7 @@ from statsmodels.tsa.arima.model import ARIMA
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import PolynomialFeatures
 from scipy.optimize import curve_fit
+from pyswarms.single import GlobalBestPSO
 # 1. 数据定义
 years = np.array([2019, 2020, 2021, 2022, 2023])  # 历史年份
 pop_growth_rate = np.array([0.35474089, 0.23804087, 0.0892522, -0.013099501, -0.103794532])  # 人口增长率（年度百分比）

@@ -5,7 +5,7 @@ from scipy.interpolate import interp1d
 
 # 1. 原始数据定义
 years = np.array([2019, 2020, 2021, 2022, 2023])  # 年份
-plt.rcParams['font.sans-serif'] = ['SimHei']  # 使用SimHei字体
+plt.rcParams['font.family'] = 'Times New Roman'  # 设置字体为 Times New Roman
 plt.rcParams['axes.unicode_minus'] = False  # 正确显示负号
 # 原始数据，NaN 表示缺失值
 vet_service_expense = np.array([np.nan, 1.9, 2.0, np.nan, 2.4])  # 兽医服务开支（亿美元）
