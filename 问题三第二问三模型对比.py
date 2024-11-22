@@ -128,6 +128,10 @@ pet_count_weighted_future = (
 svr_export_model = SVR(kernel='rbf').fit(X_export_normalized, pet_food_export_value)
 export_features_future = np.column_stack((food_export_percentage[-1] * (1 + 0.05) ** np.arange(1, 4), pop_growth_rate_future, gdp_per_capita_future, exchange_rate_future, energy_price_index_future))
 
+svr_product_model = SVR(kernel='rbf').fit(X_import_normalized, pet_food_output_value)
+product_features_future = np.column_stack((pet_count[-1] * (1 + 0.05) ** np.arange(1, 4), pop_growth_rate_future, gdp_per_capita_future, exchange_rate_future, energy_price_index_future))
+
+
 # Continue the normalization for future export features
 export_features_future_normalized = scaler_export.transform(export_features_future)
 

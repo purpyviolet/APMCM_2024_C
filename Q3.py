@@ -79,6 +79,30 @@ plt.grid(True, linestyle='--', alpha=0.6)
 plt.tight_layout()
 plt.show()
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 grid_search_exp = GridSearchCV(estimator=gbr, param_grid=param_grid, cv=3, scoring='neg_mean_squared_error', n_jobs=-1)
 grid_search_exp.fit(X_train, y_train_exp)
 best_gbr_exp = grid_search_exp.best_estimator_
