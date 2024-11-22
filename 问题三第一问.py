@@ -21,8 +21,7 @@ food_export_percentage = np.array([2.8745, 2.6897, 2.3228, 2.3002, 2.4563])  # �
 import_volume_index = np.array([120.23, 126.07, 134.64, 139.98, 145.32])  # 进口物量指数
 population_growth = np.array([0.3547, 0.2380, 0.0893, -0.0131, -0.1038])  # 人口增长率（年度百分比）
 gdp_per_capita = np.array([10143.86, 10408.72, 12617.51, 12662.58, 12614.06])  # 人均GDP（现价美元）
-global_market_size = np.array([1000, 1055, 1149.42, 1200, 1250])  # 全球市场规模（美元 亿）#比赛结束前最后两天售后群发布无水印可视化结果+无标注代码【可直接提交】为了防止倒卖，论文写作过程中遗留数个致命问题，无关代码，该问题解决方式仅在官网授权售后群答疑，盗卖方式购买资料不提供答疑。因倒卖导致无法解决漏洞、赛后无法获奖等 本数模社概不负责  感谢理解 资料助攻购买链接+说明https://docs.qq.com/doc/p/15344cd8ff0275b7d09daa50869317779fd01b25
-
+global_market_size = np.array([1000, 1055, 1149.42, 1200, 1250])  # 全球市场规模（美元 亿）
 # 2. 数据可视化分析
 plt.figure(figsize=(14, 10))
 
@@ -41,7 +40,7 @@ plt.subplot(2, 2, 2)
 plt.plot(years, market_size, '-^', label='Pet Market Size (Billion USD)', linewidth=2, markersize=6, color='g')
 plt.ylabel('Market Size (Billion USD)')
 plt.twinx()
-plt.plot(years, pet_household_penetration, '-d', label='Pet Household Penetration Rate', linewidth=2, markersize=6, color='m')#比赛结束前最后两天售后群发布无水印可视化结果+无标注代码【可直接提交】为了防止倒卖，论文写作过程中遗留数个致命问题，无关代码，该问题解决方式仅在官网授权售后群答疑，盗卖方式购买资料不提供答疑。因倒卖导致无法解决漏洞、赛后无法获奖等 本数模社概不负责  感谢理解 资料助攻购买链接+说明https://docs.qq.com/doc/p/15344cd8ff0275b7d09daa50869317779fd01b25
+plt.plot(years, pet_household_penetration, '-d', label='Pet Household Penetration Rate', linewidth=2, markersize=6, color='m')
 plt.ylabel('Household Penetration Rate')
 plt.title('Pet Market Size and Household Penetration Rate')
 plt.xlabel('Year')
