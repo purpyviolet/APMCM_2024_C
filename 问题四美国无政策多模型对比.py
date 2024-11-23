@@ -22,6 +22,8 @@ gdp_per_capita = np.array([10143.86, 10408.72, 12617.51, 12662.58, 12614.06])  #
 global_market_size = np.array([1000, 1055, 1149.42, 1200, 1250])  # Global market size (USD billion)
 exchange_rate_usd = np.array([6.9, 6.9, 6.45, 6.75, 7.12])  # Exchange rate (USD/CNY)
 us_pet_food_import = np.array([15.3, 16, 17.5, 19, 21.3])  # US pet food import (USD billion)
+tarrif_usa_addition = np.array([0.25, 0.25, 0.25, 0.25, 0.25])# 美国对中国加征关税（25%）
+tarrif_eu_addition = np.array([0, 0, 0, 0, 0])# 欧盟对中国加征关税（无）
 
 # 2. Construct Models
 # Extract features related to export
@@ -53,6 +55,8 @@ pop_growth_rate_future = np.array([-0.12, -0.15, -0.18, -0.20])  # Future four y
 exchange_rate_usd_future = exchange_rate_usd[-1] * (1 + 0.02) ** np.arange(1, 5)  # Exchange rate (USD/CNY) assuming 2% annual growth
 us_pet_food_import_future = us_pet_food_import[-1] * (1 + 0.03) ** np.arange(1, 5)  # US pet food import volume assuming 3% annual growth
 food_export_percentage_future = food_export_percentage[-1] * (1 + 0.01) ** np.arange(1, 5)  # Food export percentage assuming 1% annual growth
+tarrif_usa_addition_future = tarrif_usa_addition[-1] * (1 + 0.01) ** np.arange(1, 5)  # 美国对中国加征关税（25%）每年1%增长
+tarrif_eu_addition_future = tarrif_eu_addition[-1] * (1 + 0.01) ** np.arange(1, 5)  # 欧盟对中国加征关税（无）每年1%增长
 
 # Future features matrix
 gdp_future_features = np.column_stack((food_export_percentage_future, pop_growth_rate_future, exchange_rate_usd_future, us_pet_food_import_future))
