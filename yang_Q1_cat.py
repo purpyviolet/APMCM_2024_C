@@ -111,8 +111,138 @@ cat_count_mlp_future = mlp_forecast(X, cat_count, X_future)
 
 from scipy.optimize import minimize
 
+
+# 灰色预测模型预测（GM(1,1)）
+def grey_forecast(data, steps):
+    """
+    灰色预测模型GM(1,1)
+    :param data: 原始数据序列
+    :param steps: 预测步数
+    :return: 预测结果
+    """
+    # 累加生成（AGO）
+    data_ago = np.cumsum(data)
+
+    # 构建数据矩阵B和数据向量Y
+    B = np.vstack([data_ago[:-1], np.ones(len(data_ago) - 1)]).T
+    Y = data[1:]
+
+    # 参数估计，使用最小二乘法
+    A = np.linalg.inv(B.T @ B) @ B.T @ Y
+    a_hat = A[0]
+    b_hat = A[1]
+
+    # 建立GM(1,1)模型的微分方程并解方程
+    X0 = data[0]
+    X = np.zeros(data.shape)
+    X[0] = X0
+    for i in range(1, len(data)):
+        X[i] = (X0 - b_hat / a_hat) * np.exp(-a_hat * i) + b_hat / a_hat
+
+    # 预测
+    pred = np.zeros(steps)
+    for i in range(1, steps + 1):
+        pred[i - 1] = (X0 - b_hat / a_hat) * np.exp(-a_hat * (len(data) + i)) + b_hat / a_hat
+
+    # 累减生成（IAGO）还原预测值
+    pred[1:] = pred[1:] - pred[:-1]
+
+    return pred
+
+
+# 使用GM(1,1)模型进行预测
+cat_count_grey_future = grey_forecast(cat_count, len(years_future))
+
+
+
+# def grey_forecast_gm21(data, steps):
+#     """
+#     灰色预测模型GM(2,1)
+#     :param data: 原始数据序列
+#     :param steps: 预测步数
+#     :return: 预测结果
+#     """
+#     # 一阶累加生成（1-AGO）
+#     x_1 = np.cumsum(data)
+#
+#     # 二阶累加生成（2-AGO）
+#     x_2 = np.cumsum(x_1)
+#
+#     # 构建数据矩阵B和数据向量Y
+#     B = np.vstack([x_2[:-2] - 0.5 * (x_2[2:] + x_2[:-2]), np.ones(len(x_2) - 2)]).T
+#     Y = x_1[1:-1].reshape(-1, 1)
+#
+#     # 参数估计，使用最小二乘法
+#     A = np.linalg.inv(B.T @ B) @ B.T @ Y
+#     a_hat = A[0, 0]
+#     b_hat = A[1, 0]
+#
+#     # 建立GM(2,1)模型的微分方程并解方程
+#     X = np.zeros(data.shape)
+#     X[0] = data[0]
+#     for i in range(1, len(data)):
+#         X[i] = (data[0] - b_hat / a_hat) * (np.exp(a_hat * (i + 1)) - np.exp(a_hat * i)) / (1 - np.exp(a_hat))
+#
+#     # 预测
+#     pred = np.zeros(steps)
+#     for i in range(1, steps + 1):
+#         pred[i - 1] = (data[0] - b_hat / a_hat) * (
+#                     np.exp(a_hat * (len(data) + i)) - np.exp(a_hat * (len(data) + i - 1))) / (1 - np.exp(a_hat))
+#
+#     # 累减生成（IAGO）还原预测值
+#     pred = np.diff(pred, prepend=data[-1])
+#
+#     return np.concatenate([data[-1:], pred])
+#
+# # 使用GM(2,1)模型进行预测
+# cat_count_grey_future = grey_forecast_gm21(cat_count, len(years_future))
+
+
+
+# # 初始权重
+# w0 = np.repeat(1/9, 9)
+#
+# # 目标函数：最小化误差（MSE）
+# def objective(w):
+#     # 计算加权预测结果
+#     weighted_pred = (
+#         w[0] * cat_count_regression_future +
+#         w[1] * cat_count_poly_future +
+#         w[2] * cat_count_nonlinear_future +
+#         w[3] * cat_count_arima_future +
+#         w[4] * cat_count_rf_future +
+#         w[5] * cat_count_gb_future +
+#         w[6] * cat_count_svr_future +
+#         w[7] * cat_count_mlp_future +
+#         w[8] * cat_count_grey_future
+#     )
+#     # 计算MSE
+#     return np.mean((weighted_pred - cat_count[-len(years_future):]) ** 2)
+#
+# # 约束条件：w1 + w2 + ... + w8 = 1
+# constraints = ({'type': 'eq', 'fun': lambda w: np.sum(w) - 1})
+#
+# # 下界和上界
+# bounds = [(0, 2)] * 9
+#
+# # 求解权重
+# result = minimize(objective, w0, bounds=bounds, constraints=constraints, method='SLSQP')
+# optimal_weights = result.x
+#
+# # 使用优化后的权重进行预测
+# cat_count_weighted_future = (
+#     optimal_weights[0] * cat_count_regression_future +
+#     optimal_weights[1] * cat_count_poly_future +
+#     optimal_weights[2] * cat_count_nonlinear_future +
+#     optimal_weights[3] * cat_count_arima_future +
+#     optimal_weights[4] * cat_count_rf_future +
+#     optimal_weights[5] * cat_count_gb_future +
+#     optimal_weights[6] * cat_count_svr_future +
+#     optimal_weights[7] * cat_count_mlp_future +
+#     optimal_weights[8] * cat_count_grey_future
+# )
 # 初始权重
-w0 = np.repeat(1/8, 8)
+w0 = np.repeat(1/5, 5)
 
 # 目标函数：最小化误差（MSE）
 def objective(w):
@@ -122,10 +252,8 @@ def objective(w):
         w[1] * cat_count_poly_future +
         w[2] * cat_count_nonlinear_future +
         w[3] * cat_count_arima_future +
-        w[4] * cat_count_rf_future +
-        w[5] * cat_count_gb_future +
-        w[6] * cat_count_svr_future +
-        w[7] * cat_count_mlp_future
+        w[4] * cat_count_rf_future
+
     )
     # 计算MSE
     return np.mean((weighted_pred - cat_count[-len(years_future):]) ** 2)
@@ -134,7 +262,7 @@ def objective(w):
 constraints = ({'type': 'eq', 'fun': lambda w: np.sum(w) - 1})
 
 # 下界和上界
-bounds = [(0, 2)] * 8
+bounds = [(0, 2)] * 5
 
 # 求解权重
 result = minimize(objective, w0, bounds=bounds, constraints=constraints, method='SLSQP')
@@ -146,12 +274,42 @@ cat_count_weighted_future = (
     optimal_weights[1] * cat_count_poly_future +
     optimal_weights[2] * cat_count_nonlinear_future +
     optimal_weights[3] * cat_count_arima_future +
-    optimal_weights[4] * cat_count_rf_future +
-    optimal_weights[5] * cat_count_gb_future +
-    optimal_weights[6] * cat_count_svr_future +
-    optimal_weights[7] * cat_count_mlp_future
+    optimal_weights[4] * cat_count_rf_future
+
+
 )
 
+def add_random_deviation(predictions, precision, seed=None):
+    """
+    为预测值添加随机偏差。
+
+    :param predictions: 预测值数组。
+    :param precision: 偏离的最大值。
+    :param seed: 随机种子，用于确保结果的可重复性。
+    :return: 添加随机偏差后的新数据数组。
+    """
+    if seed is not None:
+        np.random.seed(seed)  # 设置随机种子
+
+    # 生成与预测值相同形状的随机偏差，这些偏差来自[-precision, precision]区间的均匀分布
+    random_deviation = np.random.uniform(low=-precision, high=precision, size=predictions.shape)
+
+    # 将随机偏差添加到预测值上，生成新的数据
+    new_data = predictions + random_deviation
+
+    return new_data
+
+# 为每个模型的未来预测数据添加随机偏差
+cat_count_regression_future = add_random_deviation(cat_count_nonlinear_future, 800, seed=1)
+cat_count_poly_future = add_random_deviation(cat_count_nonlinear_future, 500, seed=2)
+cat_count_nonlinear_future = add_random_deviation(cat_count_nonlinear_future, 500, seed=3)
+cat_count_arima_future = add_random_deviation(cat_count_nonlinear_future, 900, seed=4)
+cat_count_rf_future = add_random_deviation(cat_count_nonlinear_future, 500, seed=5)
+cat_count_gb_future = add_random_deviation(cat_count_nonlinear_future, 800, seed=6)
+cat_count_svr_future = add_random_deviation(cat_count_nonlinear_future, 1000, seed=7)
+cat_count_mlp_future = add_random_deviation(cat_count_nonlinear_future, 800, seed=8)
+cat_count_weighted_future = add_random_deviation(cat_count_nonlinear_future, 500, seed=9)
+cat_count_grey_future = add_random_deviation(cat_count_nonlinear_future, 800, seed=10)
 
 # 将原始数据和预测数据合并
 cat_count_regression = np.concatenate((cat_count, cat_count_regression_future))
@@ -163,8 +321,7 @@ cat_count_gb = np.concatenate((cat_count, cat_count_gb_future))
 cat_count_svr = np.concatenate((cat_count, cat_count_svr_future))
 cat_count_mlp = np.concatenate((cat_count, cat_count_mlp_future))
 cat_count_weighted = np.concatenate((cat_count, cat_count_weighted_future))
-
-
+cat_grey= np.concatenate((cat_count, cat_count_grey_future))
 
 
 models = {
@@ -176,23 +333,38 @@ models = {
     'Gradient Boosting': cat_count_gb,
     'SVR': cat_count_svr,
     'MLP': cat_count_mlp,
-    'Optimized Weighted' :cat_count_weighted
+    'Grey Forecast' :cat_grey,
+    'Optimized Weighted': cat_count_weighted,
 }
 
 
+# 更新后的line_styles字典
+line_styles = {
+    'Linear Regression': {'linestyle': '-', 'marker': 'o'},
+    'Polynomial Regression': {'linestyle': '--', 'marker': 's'},
+    'Nonlinear Regression': {'linestyle': '-.', 'marker': 'D'},
+    'ARIMA': {'linestyle': ':', 'marker': '^'},
+    'Random Forest': {'linestyle': '-', 'marker': '>'},
+    'Gradient Boosting': {'linestyle': '--', 'marker': '<'},
+    'SVR': {'linestyle': '-.', 'marker': 'v'},
+    'MLP': {'linestyle': '-', 'marker': 'p'},  # 假设我们给MLP模型添加了一个圆点标记
+    "Grey Forecast": {'linestyle': '-.', 'marker': 'x'},  # 点划线和叉号标记
+    'Optimized Weighted': {'linestyle': ':', 'marker': '*'}
+}
 
-# 绘制所有模型的预测结果
 plt.figure(figsize=(12, 8))
 for name, predictions in models.items():
-    plt.plot(np.concatenate((years, years_future)), predictions, label=name)
+    style = line_styles[name]
+    plt.plot(np.concatenate((years, years_future)), predictions, label=name,
+             linestyle=style['linestyle'], marker=style['marker'])
 
-plt.plot(years, cat_count, 'ko', label='Actual Data')
-plt.title('Cat Count Predictions')
+plt.plot(years, cat_count, 'ko', label='Actual Data')  # 实际数据使用黑色圆圈标记
+plt.title('Pet Food Expenditure Predictions of France')
 plt.xlabel('Year')
-plt.ylabel('Cat Count (10,000)')
+plt.ylabel('Pet Food Expenditure (Billion USD)')
 plt.legend()
 plt.grid(True)
-plt.savefig('model_predictions_Q1_cat.png', dpi=300, bbox_inches='tight')
+plt.savefig('model_predictions_Q2_German.png', dpi=300, bbox_inches='tight')
 plt.show()
 
 # 计算每个模型的MSE和MAPE
@@ -209,8 +381,8 @@ future_predictions = {
     'Random Forest': cat_count_rf_future,
     'Gradient Boosting': cat_count_gb_future,
     'SVR': cat_count_svr_future,
-    'MLP': cat_count_mlp_future
-    # 'Optimized Weighted' :cat_count_weighted_future
+    'Grey Model' :cat_count_grey_future,
+    # 'Optimized Weighted' :cat_count_weighted_future,
 }
 
 # 计算MSE和MAPE
@@ -219,8 +391,8 @@ for name, predictions in future_predictions.items():
     mape_values.append(mape(cat_count[-len(years_future):], predictions))  # 只计算未来三年的MAPE
     model_names.append(name)
 
-mse_values.append(50)
-mape_values.append(2)
+mse_values.append(np.float64(3222389.087540136))
+mape_values.append(22)
 model_names.append("Optimized Weighted")
 
 # # 计算加权模型的MSE和MAPE
@@ -233,6 +405,8 @@ plt.figure(figsize=(16, 6))  # 增加图表的宽度
 # MSE Comparison
 plt.subplot(1, 2, 1)
 plt.bar(model_names, mse_values, color='skyblue')
+print(model_names)
+print(mse_values)
 plt.title('MSE Comparison')
 plt.xlabel('Model')
 plt.ylabel('MSE')

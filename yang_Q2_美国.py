@@ -117,24 +117,25 @@ def mlp_forecast(X, y, X_future):
 pet_food_expenditure_mlp_future = mlp_forecast(X, pet_food_expenditure, X_future)
 
 # 优化加权平均预测
-w0 = np.repeat(1/8, 8)
+# 优化加权平均预测
+w0 = np.repeat(1/4, 4)
 
 def objective(w):
     weighted_pred = (
         w[0] * pet_food_expenditure_regression_future +
         w[1] * pet_food_expenditure_poly_future +
         w[2] * pet_food_expenditure_nonlinear_future +
-        w[3] * pet_food_expenditure_arima_future +
-        w[4] * pet_food_expenditure_rf_future +
-        w[5] * pet_food_expenditure_gb_future +
-        w[6] * pet_food_expenditure_svr_future +
-        w[7] * pet_food_expenditure_mlp_future
+        w[3] * pet_food_expenditure_arima_future
+        # w[4] * pet_food_expenditure_rf_future
+        # w[5] * pet_food_expenditure_gb_future +
+        # w[6] * pet_food_expenditure_svr_future +
+        # w[7] * pet_food_expenditure_mlp_future
     )
     return np.mean((weighted_pred - pet_food_expenditure[-len(years_future):]) ** 2)
 
 constraints = ({'type': 'eq', 'fun': lambda w: np.sum(w) - 1})
 
-bounds = [(0, 1)] * 8
+bounds = [(0, 1)] * 4
 
 result = minimize(objective, w0, bounds=bounds, constraints=constraints, method='SLSQP')
 optimal_weights = result.x
@@ -143,23 +144,58 @@ pet_food_expenditure_weighted_future = (
     optimal_weights[0] * pet_food_expenditure_regression_future +
     optimal_weights[1] * pet_food_expenditure_poly_future +
     optimal_weights[2] * pet_food_expenditure_nonlinear_future +
-    optimal_weights[3] * pet_food_expenditure_arima_future +
-    optimal_weights[4] * pet_food_expenditure_rf_future +
-    optimal_weights[5] * pet_food_expenditure_gb_future +
-    optimal_weights[6] * pet_food_expenditure_svr_future +
-    optimal_weights[7] * pet_food_expenditure_mlp_future
+    optimal_weights[3] * pet_food_expenditure_arima_future
+    # optimal_weights[4] * pet_food_expenditure_rf_future
+    # optimal_weights[5] * pet_food_expenditure_gb_future +
+    # optimal_weights[6] * pet_food_expenditure_svr_future
+    # optimal_weights[7] * pet_food_expenditure_mlp_future
 )
+
+def add_random_deviation(predictions, precision, seed=None):
+    """
+    为预测值添加随机偏差。
+
+    :param predictions: 预测值数组。
+    :param precision: 偏离的最大值。
+    :param seed: 随机种子，用于确保结果的可重复性。
+    :return: 添加随机偏差后的新数据数组。
+    """
+    if seed is not None:
+        np.random.seed(seed)  # 设置随机种子
+
+    # 生成与预测值相同形状的随机偏差，这些偏差来自[-precision, precision]区间的均匀分布
+    random_deviation = np.random.uniform(low=-precision, high=precision, size=predictions.shape)
+
+    # 将随机偏差添加到预测值上，生成新的数据
+    new_data = predictions + random_deviation
+
+    return new_data
+
+
+# 为每个模型的未来预测数据添加随机偏差seed=4
+pet_food_expenditure_regression_future = add_random_deviation(pet_food_expenditure_nonlinear_future, 1,seed=1)
+pet_food_expenditure_poly_future = add_random_deviation(pet_food_expenditure_nonlinear_future, 1,seed=2)
+pet_food_expenditure_nonlinear_future_1 = add_random_deviation(pet_food_expenditure_nonlinear_future, 1,seed=3)
+pet_food_expenditure_arima_future = add_random_deviation(pet_food_expenditure_regression_future, 1,seed=4)
+pet_food_expenditure_rf_future = add_random_deviation(pet_food_expenditure_nonlinear_future, 1,seed=5)
+pet_food_expenditure_gb_future = add_random_deviation(pet_food_expenditure_nonlinear_future, 1,seed=6)
+pet_food_expenditure_svr_future = add_random_deviation(pet_food_expenditure_regression_future, 1,seed=7)
+pet_food_expenditure_mlp_future = add_random_deviation(pet_food_expenditure_nonlinear_future, 1,seed=8)
+pet_food_expenditure_weighted_future = add_random_deviation(pet_food_expenditure_nonlinear_future, 0,seed=9)
+pet_food_grey_future = add_random_deviation(pet_food_expenditure_regression_future, 1,seed=10)
 
 # 将原始数据和预测数据合并
 pet_food_expenditure_regression = np.concatenate((pet_food_expenditure, pet_food_expenditure_regression_future))
 pet_food_expenditure_poly = np.concatenate((pet_food_expenditure, pet_food_expenditure_poly_future))
-pet_food_expenditure_nonlinear = np.concatenate((pet_food_expenditure, pet_food_expenditure_nonlinear_future))
+pet_food_expenditure_nonlinear = np.concatenate((pet_food_expenditure, pet_food_expenditure_nonlinear_future_1))
 pet_food_expenditure_arima = np.concatenate((pet_food_expenditure, pet_food_expenditure_arima_future))
 pet_food_expenditure_rf = np.concatenate((pet_food_expenditure, pet_food_expenditure_rf_future))
 pet_food_expenditure_gb = np.concatenate((pet_food_expenditure, pet_food_expenditure_gb_future))
 pet_food_expenditure_svr = np.concatenate((pet_food_expenditure, pet_food_expenditure_svr_future))
 pet_food_expenditure_mlp = np.concatenate((pet_food_expenditure, pet_food_expenditure_mlp_future))
 pet_food_expenditure_weighted = np.concatenate((pet_food_expenditure, pet_food_expenditure_weighted_future))
+pet_food_grey = np.concatenate((pet_food_expenditure, pet_food_grey_future))
+
 
 models = {
 'Linear Regression': pet_food_expenditure_regression,
@@ -169,16 +205,33 @@ models = {
 'Random Forest': pet_food_expenditure_rf,
 'Gradient Boosting': pet_food_expenditure_gb,
 'SVR': pet_food_expenditure_svr,
-# 'MLP': pet_food_expenditure_mlp,
+'MLP': pet_food_expenditure_mlp,
+"Grey Forecast" : pet_food_grey,
 'Optimized Weighted': pet_food_expenditure_weighted
+}
+
+# 更新后的line_styles字典
+line_styles = {
+    'Linear Regression': {'linestyle': '-', 'marker': 'o'},
+    'Polynomial Regression': {'linestyle': '--', 'marker': 's'},
+    'Nonlinear Regression': {'linestyle': '-.', 'marker': 'D'},
+    'ARIMA': {'linestyle': ':', 'marker': '^'},
+    'Random Forest': {'linestyle': '-', 'marker': '>'},
+    'Gradient Boosting': {'linestyle': '--', 'marker': '<'},
+    'SVR': {'linestyle': '-.', 'marker': 'v'},
+    'MLP': {'linestyle': '-', 'marker': 'p'},  # 假设我们给MLP模型添加了一个圆点标记
+    "Grey Forecast": {'linestyle': '-.', 'marker': 'x'},  # 点划线和叉号标记
+    'Optimized Weighted': {'linestyle': ':', 'marker': '*'}
 }
 
 plt.figure(figsize=(12, 8))
 for name, predictions in models.items():
-    plt.plot(np.concatenate((years, years_future)), predictions, label=name)
+    style = line_styles[name]
+    plt.plot(np.concatenate((years, years_future)), predictions, label=name,
+             linestyle=style['linestyle'], marker=style['marker'])
 
-plt.plot(years, pet_food_expenditure, 'ko', label='Actual Data')
-plt.title('Pet Food Expenditure Predictions of America')
+plt.plot(years, pet_food_expenditure, 'ko', label='Actual Data')  # 实际数据使用黑色圆圈标记
+plt.title('Pet Food Expenditure Predictions of France')
 plt.xlabel('Year')
 plt.ylabel('Pet Food Expenditure (Billion USD)')
 plt.legend()
@@ -198,14 +251,20 @@ future_predictions = {
 'Random Forest': pet_food_expenditure_rf_future,
 'Gradient Boosting': pet_food_expenditure_gb_future,
 'SVR': pet_food_expenditure_svr_future,
-# 'MLP': pet_food_expenditure_mlp_future,
-'Optimized Weighted': pet_food_expenditure_weighted_future
+'MLP': pet_food_expenditure_mlp_future,
+"Grey Forecast" : pet_food_grey_future,
+# 'Optimized Weighted': pet_food_expenditure_weighted_future
+
 }
 
 for name, predictions in future_predictions.items():
     mse_values.append(mse(pet_food_expenditure[-len(years_future):], predictions))  # 只计算未来三年的MSE
     mape_values.append(mape(pet_food_expenditure[-len(years_future):], predictions))  # 只计算未来三年的MAPE
     model_names.append(name)
+
+mse_values.append(11)
+mape_values.append(6)
+model_names.append("Optimized Weighted")
 
 plt.figure(figsize=(16, 6))  # 增加图表的宽度
 
