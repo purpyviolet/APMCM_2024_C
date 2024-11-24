@@ -250,7 +250,7 @@ plt.xlabel('Year',fontsize=12)
 plt.ylabel('Dog Count (10,000)',fontsize=12)
 plt.legend()
 plt.grid(True)
-plt.savefig('model_comparison_Q1_dog.png', dpi=300, bbox_inches='tight')
+plt.savefig('model_predictions_Q1_dog.png', dpi=300, bbox_inches='tight')
 plt.show()
 
 # 计算每个模型的MSE和MAPE
