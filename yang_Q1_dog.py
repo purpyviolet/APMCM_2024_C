@@ -9,7 +9,8 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.svm import SVR
 from sklearn.neural_network import MLPRegressor
-
+plt.rcParams['font.sans-serif'] = ['Times New Roman']  # 使用Times New Roman字体
+plt.rcParams['axes.unicode_minus'] = False  # 正确显示负号
 # 定义误差计算函数
 def mse(y_true, y_pred):
     return np.mean((y_true - y_pred) ** 2)
