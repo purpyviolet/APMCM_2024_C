@@ -33,15 +33,15 @@ goods_export_percentage_interpolated = interp_func(years)
 # 生育率的数据没有缺失，不需要插值
 
 # 3. 插值前后对比可视化
-plt.figure(figsize=(10, 12))
+plt.figure(figsize=(18, 12))
 
 # 兽医服务开支的插值前后对比
 plt.subplot(3, 1, 1)
 plt.plot(years, vet_service_expense, 'ro-', label='Original (With Missing Values)', linewidth=1.5, markersize=8)
 plt.plot(years, vet_service_expense_interpolated, 'b*-', label='Interpolated', linewidth=1.5, markersize=8)
-plt.title('Veterinary Service Expense Interpolation (2019-2023)')
-plt.xlabel('Year')
-plt.ylabel('Expense (Billion USD)')
+plt.title('Veterinary Service Expense Interpolation (2019-2023)', fontsize=16, fontweight='bold')
+plt.xlabel('Year',fontsize=12, fontweight='bold')
+plt.ylabel('Expense (Billion USD)',fontsize=12, fontweight='bold')
 plt.legend()
 plt.grid(True)
 
@@ -49,9 +49,9 @@ plt.grid(True)
 plt.subplot(3, 1, 2)
 plt.plot(years, pet_medical_market_size, 'ro-', label='Original (With Missing Values)', linewidth=1.5, markersize=8)
 plt.plot(years, pet_medical_market_size_interpolated, 'b*-', label='Interpolated', linewidth=1.5, markersize=8)
-plt.title('Pet Medical Market Size Interpolation (2019-2023)')
-plt.xlabel('Year')
-plt.ylabel('Market Size (Billion EUR)')
+plt.title('Pet Medical Market Size Interpolation (2019-2023)', fontsize=16, fontweight='bold')
+plt.xlabel('Year',fontsize=12, fontweight='bold')
+plt.ylabel('Market Size (Billion EUR)',fontsize=12, fontweight='bold')
 plt.legend()
 plt.grid(True)
 
@@ -59,14 +59,15 @@ plt.grid(True)
 plt.subplot(3, 1, 3)
 plt.plot(years, goods_export_percentage, 'ro-', label='Original (With Missing Values)', linewidth=1.5, markersize=8)
 plt.plot(years, goods_export_percentage_interpolated, 'b*-', label='Interpolated', linewidth=1.5, markersize=8)
-plt.title('Goods Export Percentage Interpolation (2019-2023)')
-plt.xlabel('Year')
-plt.ylabel('Goods Export Percentage (%)')
+plt.title('Goods Export Percentage Interpolation (2019-2023)', fontsize=16, fontweight='bold')
+plt.xlabel('Year',fontsize=12, fontweight='bold')
+plt.ylabel('Goods Export Percentage (%)',fontsize=12, fontweight='bold')
 plt.legend()
 plt.grid(True)
 
-plt.suptitle('Comparison of Original and Interpolated Data (France)', fontsize=16, fontweight='bold')
+plt.suptitle('Comparison of Original and Interpolated Data (France)', fontsize=24, fontweight='bold')
 plt.tight_layout(rect=[0, 0, 1, 0.95])
+plt.savefig('Interpolation_fig.png', dpi=300, bbox_inches='tight')
 plt.show()
 
 # 4. 输出插值后的数据
