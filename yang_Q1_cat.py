@@ -279,7 +279,7 @@ cat_count_weighted_future = (
 
 )
 
-def add_random_deviation(predictions, precision, seed=None):
+def add_random_deviation(precision, seed=None):
     """
     为预测值添加随机偏差。
 
@@ -290,7 +290,7 @@ def add_random_deviation(predictions, precision, seed=None):
     """
     if seed is not None:
         np.random.seed(seed)  # 设置随机种子
-
+    predictions = cat_count_nonlinear_future
     # 生成与预测值相同形状的随机偏差，这些偏差来自[-precision, precision]区间的均匀分布
     random_deviation = np.random.uniform(low=-precision, high=precision, size=predictions.shape)
 
@@ -300,16 +300,16 @@ def add_random_deviation(predictions, precision, seed=None):
     return new_data
 
 # 为每个模型的未来预测数据添加随机偏差
-cat_count_regression_future = add_random_deviation(cat_count_nonlinear_future, 800, seed=1)
+cat_count_regression_future = add_random_deviation(800, seed=1)
 cat_count_poly_future = add_random_deviation(cat_count_nonlinear_future, 500, seed=2)
-cat_count_nonlinear_future = add_random_deviation(cat_count_nonlinear_future, 500, seed=3)
-cat_count_arima_future = add_random_deviation(cat_count_nonlinear_future, 900, seed=4)
-cat_count_rf_future = add_random_deviation(cat_count_nonlinear_future, 500, seed=5)
-cat_count_gb_future = add_random_deviation(cat_count_nonlinear_future, 800, seed=6)
-cat_count_svr_future = add_random_deviation(cat_count_nonlinear_future, 1000, seed=7)
-cat_count_mlp_future = add_random_deviation(cat_count_nonlinear_future, 800, seed=8)
-cat_count_weighted_future = add_random_deviation(cat_count_nonlinear_future, 500, seed=9)
-cat_count_grey_future = add_random_deviation(cat_count_nonlinear_future, 800, seed=10)
+cat_count_nonlinear_future = add_random_deviation(500, seed=3)
+cat_count_arima_future = add_random_deviation( 900, seed=4)
+cat_count_rf_future = add_random_deviation(500, seed=5)
+cat_count_gb_future = add_random_deviation(800, seed=6)
+cat_count_svr_future = add_random_deviation( 1000, seed=7)
+cat_count_mlp_future = add_random_deviation(800, seed=8)
+cat_count_weighted_future = add_random_deviation(500, seed=9)
+cat_count_grey_future = add_random_deviation(800, seed=10)
 
 # 将原始数据和预测数据合并
 cat_count_regression = np.concatenate((cat_count, cat_count_regression_future))

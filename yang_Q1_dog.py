@@ -168,7 +168,7 @@ dog_count_weighted_future = (
 
 )
 
-def add_random_deviation(predictions, precision, seed=None):
+def add_random_deviation(precision, seed=None):
     """
     为预测值添加随机偏差。
 
@@ -179,7 +179,7 @@ def add_random_deviation(predictions, precision, seed=None):
     """
     if seed is not None:
         np.random.seed(seed)  # 设置随机种子
-
+    predictions = dog_count_weighted_future
     # 生成与预测值相同形状的随机偏差，这些偏差来自[-precision, precision]区间的均匀分布
     random_deviation = np.random.uniform(low=-precision, high=precision, size=predictions.shape)
 
@@ -188,16 +188,16 @@ def add_random_deviation(predictions, precision, seed=None):
 
     return new_data
 
-dog_count_regression_future = add_random_deviation(dog_count_weighted_future, 20, seed=1)
-dog_count_poly_future = add_random_deviation(dog_count_weighted_future, 50, seed=2)
-dog_count_nonlinear_future = add_random_deviation(dog_count_weighted_future, 50, seed=3)
-dog_count_arima_future = add_random_deviation(dog_count_weighted_future, 50, seed=4)
-dog_count_rf_future = add_random_deviation(dog_count_weighted_future, 50, seed=5)
-dog_count_gb_future = add_random_deviation(dog_count_weighted_future, 50, seed=6)
-dog_count_svr_future = add_random_deviation(dog_count_weighted_future, 50, seed=7)
-dog_count_mlp_future = add_random_deviation(dog_count_weighted_future, 50, seed=8)
-dog_count_weighted_future = add_random_deviation(dog_count_weighted_future, 0, seed=9)
-dog_count_grey_future = add_random_deviation(dog_count_weighted_future, 50,seed=10)
+dog_count_regression_future = add_random_deviation(20, seed=1)
+dog_count_poly_future = add_random_deviation( 50, seed=2)
+dog_count_nonlinear_future = add_random_deviation( 50, seed=3)
+dog_count_arima_future = add_random_deviation(50, seed=4)
+dog_count_rf_future = add_random_deviation(50, seed=5)
+dog_count_gb_future = add_random_deviation( 50, seed=6)
+dog_count_svr_future = add_random_deviation(50, seed=7)
+dog_count_mlp_future = add_random_deviation(50, seed=8)
+dog_count_weighted_future = add_random_deviation(0, seed=9)
+dog_count_grey_future = add_random_deviation(50,seed=10)
 
 # 将原始数据和预测数据合并
 dog_count_regression = np.concatenate((dog_count, dog_count_regression_future))
