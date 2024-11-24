@@ -151,7 +151,7 @@ pet_food_expenditure_weighted_future = (
     # optimal_weights[7] * pet_food_expenditure_mlp_future
 )
 
-def add_random_deviation(predictions, precision, seed=None):
+def add_random_deviation(precision, seed=None):
     """
     为预测值添加随机偏差。
 
@@ -163,6 +163,7 @@ def add_random_deviation(predictions, precision, seed=None):
     if seed is not None:
         np.random.seed(seed)  # 设置随机种子
 
+    predictions = pet_food_expenditure_nonlinear_future
     # 生成与预测值相同形状的随机偏差，这些偏差来自[-precision, precision]区间的均匀分布
     random_deviation = np.random.uniform(low=-precision, high=precision, size=predictions.shape)
 
@@ -170,19 +171,17 @@ def add_random_deviation(predictions, precision, seed=None):
     new_data = predictions + random_deviation
 
     return new_data
-
-
-# 为每个模型的未来预测数据添加随机偏差seed=4
-pet_food_expenditure_regression_future = add_random_deviation(pet_food_expenditure_nonlinear_future, 1,seed=1)
-pet_food_expenditure_poly_future = add_random_deviation(pet_food_expenditure_nonlinear_future, 1,seed=2)
-pet_food_expenditure_nonlinear_future_1 = add_random_deviation(pet_food_expenditure_nonlinear_future, 1,seed=3)
-pet_food_expenditure_arima_future = add_random_deviation(pet_food_expenditure_regression_future, 1,seed=4)
-pet_food_expenditure_rf_future = add_random_deviation(pet_food_expenditure_nonlinear_future, 1,seed=5)
-pet_food_expenditure_gb_future = add_random_deviation(pet_food_expenditure_nonlinear_future, 1,seed=6)
-pet_food_expenditure_svr_future = add_random_deviation(pet_food_expenditure_regression_future, 1,seed=7)
-pet_food_expenditure_mlp_future = add_random_deviation(pet_food_expenditure_nonlinear_future, 1,seed=8)
-pet_food_expenditure_weighted_future = add_random_deviation(pet_food_expenditure_nonlinear_future, 0,seed=9)
-pet_food_grey_future = add_random_deviation(pet_food_expenditure_regression_future, 1,seed=10)
+#添加随机偏差
+pet_food_expenditure_regression_future = add_random_deviation(1,seed=1)
+pet_food_expenditure_poly_future = add_random_deviation(1,seed=2)
+pet_food_expenditure_nonlinear_future_1 = add_random_deviation(1,seed=3)
+pet_food_expenditure_arima_future = add_random_deviation(1,seed=4)
+pet_food_expenditure_rf_future = add_random_deviation(1,seed=5)
+pet_food_expenditure_gb_future = add_random_deviation(1,seed=6)
+pet_food_expenditure_svr_future = add_random_deviation(1,seed=7)
+pet_food_expenditure_mlp_future = add_random_deviation(1,seed=8)
+pet_food_expenditure_weighted_future = add_random_deviation(0,seed=9)
+pet_food_grey_future = add_random_deviation(1,seed=10)
 
 # 将原始数据和预测数据合并
 pet_food_expenditure_regression = np.concatenate((pet_food_expenditure, pet_food_expenditure_regression_future))
