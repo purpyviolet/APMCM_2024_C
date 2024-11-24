@@ -227,7 +227,7 @@ for name, predictions in models.items():
              linestyle=style['linestyle'], marker=style['marker'])
 
 plt.plot(years, pet_food_expenditure, 'ko', label='Actual Data')  # 实际数据使用黑色圆圈标记
-plt.title('Pet Food Expenditure Predictions of France')
+plt.title('Pet Food Expenditure Predictions of German')
 plt.xlabel('Year')
 plt.ylabel('Pet Food Expenditure (Billion USD)')
 plt.legend()
