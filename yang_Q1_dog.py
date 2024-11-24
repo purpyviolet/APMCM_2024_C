@@ -244,12 +244,12 @@ for name, predictions in models.items():
              linestyle=style['linestyle'], marker=style['marker'])
 
 plt.plot(years, dog_count, 'ko', label='Actual Data')  # 实际数据使用黑色圆圈标记
-plt.title('Pet Food Expenditure Predictions of France')
+plt.title('Dog Count Prediction')
 plt.xlabel('Year')
-plt.ylabel('Pet Food Expenditure (Billion USD)')
+plt.ylabel('Dog Count (10,000)')
 plt.legend()
 plt.grid(True)
-plt.savefig('model_predictions_Q2_German.png', dpi=300, bbox_inches='tight')
+plt.savefig('model_comparison_Q1_dog.png', dpi=300, bbox_inches='tight')
 plt.show()
 
 # 计算每个模型的MSE和MAPE
