@@ -8,6 +8,8 @@ from sklearn.neural_network import MLPRegressor
 from statsmodels.tsa.arima.model import ARIMA
 from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
+plt.rcParams['font.sans-serif'] = ['Times New Roman']  # 使用Times New Roman字体
+plt.rcParams['axes.unicode_minus'] = False  # 正确显示负号
 # 定义列表
 germany = [2.6, 2.8, 3.0, 3.2, 3.4]
 america = [36.9, 38.1, 39.4, 40.8, 42.3]
@@ -45,18 +47,18 @@ rate_pred = model_fit.forecast(steps=n)
 print("未来3年的预测rate：", rate_pred)
 
 # 绘制历史数据和预测结果
-plt.figure(figsize=(12, 8))
+plt.figure(figsize=(10, 6))
 
 # 绘制实际数据
 
 
 # 绘制预测数据，包括历史数据的最后一个值
 future_years = np.array([2024, 2025, 2026])
-plt.plot(np.concatenate((years, future_years)), np.concatenate((rate, rate_pred)), 'r*-', label='Predicted Data')
-plt.plot(years, rate, 'ko-', label='Actual Data')
-plt.title('Rate Predictions')
-plt.xlabel('Year')
-plt.ylabel('Rate')
+plt.plot(np.concatenate((years, future_years)), np.concatenate((rate, rate_pred)), 'b*--', label='Predicted Data')
+plt.plot(years, rate, 'ro-', label='Historical Data')
+plt.title('Rate Predictions',fontsize=20, fontweight='bold')
+plt.xlabel('Year',fontsize=12, fontweight='bold')
+plt.ylabel('Rate',fontsize=12, fontweight='bold')
 plt.legend()
 plt.grid(True)
 plt.savefig('Q2_Rate Predictions', dpi=300, bbox_inches='tight')
@@ -92,9 +94,9 @@ print(global_pet_food_expenditure)
 future_years = np.array([2024, 2025, 2026])
 plt.plot(np.concatenate((years, future_years)), global_pet_food_expenditure, 'r*-', label='Estimated Data')
 
-plt.title('Global Pet Food Expenditure Estimation')
-plt.xlabel('Year')
-plt.ylabel('Rate')
+plt.title('Global Pet Food Expenditure Estimation',fontsize=18, fontweight='bold')
+plt.xlabel('Year',fontsize=12, fontweight='bold')
+plt.ylabel('Rate',fontsize=12, fontweight='bold')
 plt.legend()
 plt.grid(True)
 plt.savefig('Q2_Global Pet Food Expenditure Estimation', dpi=300, bbox_inches='tight')

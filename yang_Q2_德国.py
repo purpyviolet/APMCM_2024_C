@@ -9,6 +9,8 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.svm import SVR
 from sklearn.neural_network import MLPRegressor
+plt.rcParams['font.sans-serif'] = ['Times New Roman']  # 使用Times New Roman字体
+plt.rcParams['axes.unicode_minus'] = False  # 正确显示负号
 
 # 定义误差计算函数
 def mse(y_true, y_pred):
@@ -221,16 +223,16 @@ line_styles = {
     'Optimized Weighted': {'linestyle': ':', 'marker': '*'}
 }
 
-plt.figure(figsize=(12, 8))
+plt.figure(figsize=(10, 6))
 for name, predictions in models.items():
     style = line_styles[name]
     plt.plot(np.concatenate((years, years_future)), predictions, label=name,
              linestyle=style['linestyle'], marker=style['marker'])
-
-plt.plot(years, pet_food_expenditure, 'ko', label='Actual Data')  # 实际数据使用黑色圆圈标记
-plt.title('Pet Food Expenditure Predictions of German')
-plt.xlabel('Year')
-plt.ylabel('Pet Food Expenditure (Billion USD)')
+    
+plt.plot(years, pet_food_expenditure, 'ro-', label='Historical Data')  # 实际数据使用红线圆圈标记
+plt.title('Pet Food Expenditure Predictions of German',fontsize=20, fontweight='bold')
+plt.xlabel('Year',fontsize=12)
+plt.ylabel('Pet Food Expenditure (Billion USD)',fontsize=12)
 plt.legend()
 plt.grid(True)
 plt.savefig('model_predictions_Q2_German.png', dpi=300, bbox_inches='tight')
@@ -268,17 +270,17 @@ plt.figure(figsize=(16, 6))  # 增加图表的宽度
 # MSE Comparison
 plt.subplot(1, 2, 1)
 plt.bar(model_names, mse_values, color='skyblue')
-plt.title('MSE Comparison')
-plt.xlabel('Model')
-plt.ylabel('MSE')
+plt.title('MSE Comparison',fontsize=20, fontweight='bold')
+plt.xlabel('Model',fontsize=12)
+plt.ylabel('MSE',fontsize=12)
 plt.xticks(rotation=45, ha='right')  # 旋转x轴标签45度，并向右对齐
 
 # MAPE Comparison
 plt.subplot(1, 2, 2)
 plt.bar(model_names, mape_values, color='lightgreen')
-plt.title('MAPE Comparison')
-plt.xlabel('Model')
-plt.ylabel('MAPE (%)')
+plt.title('MAPE Comparison',fontsize=20, fontweight='bold')
+plt.xlabel('Model',fontsize=12)
+plt.ylabel('MAPE (%)',fontsize=12)
 plt.xticks(rotation=45, ha='right')  # 旋转x轴标签45度，并向右对齐
 plt.tight_layout()  # 调整子图布局，以防止标签重叠
 plt.savefig('model_comparison_Q2_German.png', dpi=300, bbox_inches='tight')

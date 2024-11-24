@@ -9,7 +9,8 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.svm import SVR
 from sklearn.neural_network import MLPRegressor
-
+plt.rcParams['font.sans-serif'] = ['Times New Roman']  # 使用Times New Roman字体
+plt.rcParams['axes.unicode_minus'] = False  # 正确显示负号
 # 定义误差计算函数
 def mse(y_true, y_pred):
     return np.mean((y_true - y_pred) ** 2)
@@ -301,7 +302,7 @@ def add_random_deviation(precision, seed=None):
 
 # 为每个模型的未来预测数据添加随机偏差
 cat_count_regression_future = add_random_deviation(800, seed=1)
-cat_count_poly_future = add_random_deviation(cat_count_nonlinear_future, 500, seed=2)
+cat_count_poly_future = add_random_deviation(500, seed=2)
 cat_count_nonlinear_future = add_random_deviation(500, seed=3)
 cat_count_arima_future = add_random_deviation( 900, seed=4)
 cat_count_rf_future = add_random_deviation(500, seed=5)
@@ -352,16 +353,16 @@ line_styles = {
     'Optimized Weighted': {'linestyle': ':', 'marker': '*'}
 }
 
-plt.figure(figsize=(12, 8))
+plt.figure(figsize=(10, 6))
 for name, predictions in models.items():
     style = line_styles[name]
     plt.plot(np.concatenate((years, years_future)), predictions, label=name,
              linestyle=style['linestyle'], marker=style['marker'])
 
-plt.plot(years, cat_count, 'ko', label='Actual Data')  # 实际数据使用黑色圆圈标记
-plt.title('Cat Count Prediction')
-plt.xlabel('Year')
-plt.ylabel('Cat Count (10,000)')
+plt.plot(years, cat_count, 'ro-', label='Historical Data')  # 实际数据使用红线圆圈标记
+plt.title('Cat Count Prediction',fontsize=20, fontweight='bold')
+plt.xlabel('Year',fontsize=12)
+plt.ylabel('Cat Count (10,000)',fontsize=12)
 plt.legend()
 plt.grid(True)
 plt.savefig('model_comparison_Q1_cat.png', dpi=300, bbox_inches='tight')
@@ -407,17 +408,17 @@ plt.subplot(1, 2, 1)
 plt.bar(model_names, mse_values, color='skyblue')
 print(model_names)
 print(mse_values)
-plt.title('MSE Comparison')
-plt.xlabel('Model')
-plt.ylabel('MSE')
+plt.title('MSE Comparison',fontsize=20, fontweight='bold')
+plt.xlabel('Model',fontsize=12)
+plt.ylabel('MSE',fontsize=12)
 plt.xticks(rotation=45, ha='right')  # 旋转x轴标签45度，并向右对齐
 
 # MAPE Comparison
 plt.subplot(1, 2, 2)
 plt.bar(model_names, mape_values, color='lightgreen')
-plt.title('MAPE Comparison')
-plt.xlabel('Model')
-plt.ylabel('MAPE (%)')
+plt.title('MAPE Comparison',fontsize=20, fontweight='bold')
+plt.xlabel('Model',fontsize=12)
+plt.ylabel('MAPE (%)',fontsize=12)
 plt.xticks(rotation=45, ha='right')  # 旋转x轴标签45度，并向右对齐
 
 plt.tight_layout()
